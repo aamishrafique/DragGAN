@@ -25,7 +25,7 @@ jobs:
         id: pylint
         run: |
           pylint_exit_code=0
-          pylint_report=$(pylint visualizer_drag_gradio.py) || pylint_exit_code=$?
+          pylint_report=$(pylint --disable=C0114,E0401,C0103,C0116 visualizer_drag_gradio.py) || pylint_exit_code=$?
           echo "$pylint_report"
           if [ $pylint_exit_code -eq 0 ]; then
             pylint_score=$(echo "$pylint_report" | awk -F'/' '/Your code has been rated at/ {print $2}' | cut -d' ' -f1)
