@@ -24,18 +24,20 @@ jobs:
       - name: Run Pylint
         id: pylint
         run: |
-          echo "$pylint_report"
-          echo "Pylint Exit Code: $pylint_exit_code"
-          if [ $pylint_exit_code -eq 0 ]; then
-            pylint_score=$(echo "$pylint_report" | awk -F'/' '/Your code has been rated at/ {print $2}' | cut -d' ' -f1)
-            if (( $(echo "$pylint_score > 8" | bc -l) )); then
-              echo "Pylint score is above 8/10"
-            else
-              echo "Pylint score is below 8/10. Failing the workflow."
-              exit 1
-            fi
-          else
-            echo "Pylint execution failed. Exiting with the captured pylint error message."
-            echo "::error::$pylint_report"
-            exit 1
-          fi
+          pylint --disable=C0114,E0401,C0103,C0116 visualizer_drag_gradio.py
+        #   pylint_exit_code=0
+        #   pylint_report=$(pylint --disable=C0114,E0401,C0103,C0116 visualizer_drag_gradio.py) || pylint_exit_code=$?
+        #   echo "$pylint_report"
+        #   echo "Pylint Exit Code: $pylint_exit_code"
+        #   if [ $pylint_exit_code -eq 0 ]; then
+        #     pylint_score=$(echo "$pylint_report" | awk -F'/' '/Your code has been rated at/ {print $2}' | cut -d' ' -f1)
+        #     if (( $(echo "$pylint_score > 8" | bc -l) )); then
+        #       echo "Pylint score is above 8/10"
+        #     else
+        #       echo "Pylint score is below 8/10. Failing the workflow."
+        #       exit 1
+        #     fi
+        #   else
+        #     echo "Pylint execution failed. Failing the workflow."
+        #     exit 1
+        #   fi
