@@ -15,7 +15,7 @@ jobs:
 
       - name: Check Model File Size
         run: |
-          model_file="your_model.pkl"
+          model_file="stylegan2_custom_512_pytorch.pkl"
           max_size_bytes=400000000  # 400MB in bytes
 
           actual_size=$(wc -c < "$model_file")
