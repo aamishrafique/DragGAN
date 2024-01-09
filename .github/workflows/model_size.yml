@@ -1,0 +1,29 @@
+name: Model File Check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-model-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Check Model File Size
+        run: |
+          model_file="your_model.pkl"
+          max_size_bytes=400000000  # 400MB in bytes
+
+          actual_size=$(wc -c < "$model_file")
+          echo "Model file size: $actual_size bytes"
+
+          if [ "$actual_size" -gt "$max_size_bytes" ]; then
+            echo "Error: Model file size exceeds the maximum allowed size (400MB). Please optimize your model."
+            exit 1
+          else
+            echo "Model file size is within acceptable limits."
+          fi
