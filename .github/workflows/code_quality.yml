@@ -1,0 +1,41 @@
+name: Check Code Quality
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Install Packages
+        run: pip install -r requirements.txt
+
+      - name: Run Pylint
+        id: pylint
+        run: |
+          pylint_exit_code=0
+          pylint_report=$(pylint visualizer_drag_gradio.py) || pylint_exit_code=$?
+          echo "$pylint_report"
+          if [ $pylint_exit_code -eq 0 ]; then
+            pylint_score=$(echo "$pylint_report" | awk -F'/' '/Your code has been rated at/ {print $2}' | cut -d' ' -f1)
+            if (( $(echo "$pylint_score > 8" | bc -l) )); then
+              echo "Pylint score is above 8/10"
+            else
+              echo "Pylint score is below 8/10. Failing the workflow."
+              exit 1
+            fi
+          else
+            echo "Pylint execution failed. Failing the workflow."
+            exit 1
+          fi
